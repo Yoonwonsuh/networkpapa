@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../data/models/models.dart';
+
 part 'recipe_model.g.dart';
 
 @JsonSerializable()
@@ -95,4 +97,35 @@ class APIIngredients {
       _$APIIngredientsFromJson(json);
 
   Map<String, dynamic> toJson() => _$APIIngredientsToJson(this);
+}
+
+Recipe convertRecipe(APIRecipe apiRecipe) {
+  final detailRecipe = Recipe(
+    label: apiRecipe.label,
+    image: apiRecipe.image,
+    url: apiRecipe.url,
+    calories: apiRecipe.calories,
+    totalTime: apiRecipe.totalTime,
+    totalWeight: apiRecipe.totalWeight,
+  );
+
+  detailRecipe.id = DateTime.now().millisecondsSinceEpoch;
+  detailRecipe.ingredients =
+      convertIngredient(apiRecipe.ingredients, detailRecipe.id!);
+  return detailRecipe;
+}
+
+List<Ingredient> convertIngredient(
+    List<APIIngredients> apiIngredients, int recipeId) {
+  final Ingredients = <Ingredient>[];
+
+  for (APIIngredients apiIngredient in apiIngredients) {
+    final ingredient = Ingredient(
+      recipeId: recipeId,
+      name: apiIngredient.name,
+      weight: apiIngredient.weight,
+    );
+    Ingredients.add(ingredient);
+  }
+  return Ingredients;
 }

@@ -62,7 +62,6 @@ class _RecipeListState extends State<RecipeList> {
     });
   }
 
-
   @override
   void dispose() {
     searchTextController.dispose();
@@ -280,16 +279,18 @@ class _RecipeListState extends State<RecipeList> {
 
   Widget _buildRecipeCard(
       BuildContext topLevelContext, List<APIHits> hits, int index) {
-    final recipe = hits[index].recipe;
+    final apiRecipe = hits[index].recipe;
     return GestureDetector(
       onTap: () {
         Navigator.push(topLevelContext, MaterialPageRoute(
           builder: (context) {
-            return const RecipeDetails();
+            return RecipeDetails(
+              recipe: convertRecipe(apiRecipe),
+            );
           },
         ));
       },
-      child: recipeCard(recipe),
+      child: recipeCard(apiRecipe),
     );
   }
 }
